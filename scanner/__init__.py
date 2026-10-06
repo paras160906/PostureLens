@@ -31,6 +31,10 @@ from .falco_normalizer import (
     FalcoAlertNormalizer,
     NormalizedRuntimeAlert,
 )
+from .sbom_vulnerability import (
+    SBOMEngine,
+    OSVCorrelator,
+)
 
 __all__ = [
     "DockerfileAnalyzer",
@@ -52,4 +56,6 @@ __all__ = [
     "PolicyScanReport",
     "FalcoAlertNormalizer",
     "NormalizedRuntimeAlert",
+    "SBOMEngine",
+    "OSVCorrelator",
 ]

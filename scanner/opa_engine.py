@@ -31,6 +31,7 @@ class Violation(BaseModel):
     title: str
     description: str
     field_path: str
+    finding_type: str = "misconfiguration"  # "misconfiguration" | "vulnerability"
 
 
 class RiskScore(BaseModel):
@@ -39,6 +40,8 @@ class RiskScore(BaseModel):
     level: str  # "CLEAN" | "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
     breakdown: Dict[str, int] = Field(default_factory=dict)
     total_violations: int = 0
+    misconfiguration_count: int = 0
+    vulnerability_count: int = 0
 
 
 class PolicyScanReport(BaseModel):
@@ -47,6 +50,9 @@ class PolicyScanReport(BaseModel):
     target_type: str = "combined"
     violations: List[Violation] = Field(default_factory=list)
     risk_score: RiskScore
+    misconfiguration_count: int = 0
+    vulnerability_count: int = 0
+    finding_breakdown: Dict[str, int] = Field(default_factory=dict)
 
 
 class OPAEngine:
@@ -243,6 +249,8 @@ class OPAEngine:
         """
         breakdown = {"critical": 0, "high": 0, "medium": 0, "low": 0}
         total_points = 0
+        misc_count = 0
+        vuln_count = 0
 
         for v in violations:
             sev = v.severity.lower()
@@ -250,6 +258,11 @@ class OPAEngine:
                 breakdown[sev] += 1
             weight = SEVERITY_WEIGHTS.get(sev, 1)
             total_points += weight
+
+            if getattr(v, "finding_type", "misconfiguration") == "vulnerability":
+                vuln_count += 1
+            else:
+                misc_count += 1
 
         final_score = min(total_points, 100)
 
@@ -269,5 +282,7 @@ class OPAEngine:
             score=final_score,
             level=level,
             breakdown=breakdown,
-            total_violations=len(violations)
+            total_violations=len(violations),
+            misconfiguration_count=misc_count,
+            vulnerability_count=vuln_count
         )

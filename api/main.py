@@ -14,6 +14,8 @@ from scanner import (
     K8sManifestAnalyzer,
     OPAEngine,
     FalcoAlertNormalizer,
+    SBOMEngine,
+    OSVCorrelator,
 )
 from scanner.policy_registry import list_loaded_policies, PolicyRuleMetadata
 from .database import (
@@ -83,10 +85,14 @@ def health_check():
 
 @app.post("/scan", tags=["Scanning"])
 @app.post("/api/v1/scan", tags=["Scanning"])
-async def scan_file_upload(file: UploadFile = File(...)):
+async def scan_file_upload(
+    file: UploadFile = File(...),
+    include_sbom: bool = False
+):
     """
     Upload a Dockerfile or Kubernetes YAML manifest file for security scanning.
-    Runs parsing -> OPA policy evaluation -> risk scoring and saves to scan history.
+    Runs parsing -> OPA policy evaluation -> risk scoring.
+    Optionally includes Syft SBOM generation + OSV CVE vulnerability scanning when include_sbom=True.
     """
     filename = file.filename or "uploaded_file"
     raw_bytes = await file.read()
@@ -111,11 +117,73 @@ async def scan_file_upload(file: UploadFile = File(...)):
             parsed_result = analyzer.analyze()
             report = opa_engine.evaluate_dockerfile(parsed_result)
 
+        # Tag misconfiguration findings explicitly
+        for v in report.violations:
+            if not hasattr(v, "finding_type") or not v.finding_type:
+                v.finding_type = "misconfiguration"
+
+        # Optional SBOM Generation + OSV CVE Vulnerability Scan
+        if include_sbom:
+            cve_violations = []
+            try:
+                sbom_engine = SBOMEngine()
+                osv_correlator = OSVCorrelator()
+                
+                targets_to_scan = []
+                if file_type == "dockerfile" and hasattr(parsed_result, "base_images"):
+                    for img_info in parsed_result.base_images:
+                        if img_info.image and img_info.image.strip():
+                            targets_to_scan.append(img_info.image.strip())
+
+                if not targets_to_scan:
+                    import tempfile
+                    with tempfile.NamedTemporaryFile("w", suffix=".Dockerfile", delete=False, encoding="utf-8") as tmp:
+                        tmp.write(content)
+                        tmp_path = tmp.name
+                    targets_to_scan.append(f"dockerfile:{tmp_path}")
+
+                for target in targets_to_scan:
+                    sbom_data = sbom_engine.generate_sbom_for_target(target)
+                    packages = sbom_engine.extract_packages_from_sbom(sbom_data)
+                    vuln_violations = osv_correlator.query_vulnerabilities(packages)
+                    cve_violations.extend(vuln_violations)
+
+            except Exception as sbom_err:
+                print(f"Warning: SBOM/CVE correlation failed: {sbom_err}")
+
+            if cve_violations:
+                report.violations.extend(cve_violations)
+                # Re-calculate merged risk score
+                report.risk_score = opa_engine.calculate_risk_score(report.violations)
+
+        # Calculate final breakdown counts
+        misc_count = sum(1 for v in report.violations if getattr(v, "finding_type", "misconfiguration") == "misconfiguration")
+        vuln_count = sum(1 for v in report.violations if getattr(v, "finding_type", "misconfiguration") == "vulnerability")
+        
+        report.misconfiguration_count = misc_count
+        report.vulnerability_count = vuln_count
+        report.finding_breakdown = {
+            "misconfigurations": misc_count,
+            "vulnerabilities": vuln_count
+        }
+
+        report_dict = report.model_dump()
+        report_dict["misconfiguration_count"] = misc_count
+        report_dict["vulnerability_count"] = vuln_count
+        report_dict["finding_breakdown"] = {
+            "misconfigurations": misc_count,
+            "vulnerabilities": vuln_count
+        }
+
         full_scan_dict = {
             "filename": filename,
             "file_type": file_type,
             "parsed_data": parsed_result.model_dump(),
-            "policy_report": report.model_dump()
+            "policy_report": report_dict,
+            "finding_breakdown": {
+                "misconfigurations": misc_count,
+                "vulnerabilities": vuln_count
+            }
         }
 
         scan_id = save_scan(
@@ -134,8 +202,14 @@ async def scan_file_upload(file: UploadFile = File(...)):
             "risk_score": report.risk_score.score,
             "risk_level": report.risk_score.level,
             "total_violations": len(report.violations),
+            "misconfiguration_count": misc_count,
+            "vulnerability_count": vuln_count,
+            "finding_breakdown": {
+                "misconfigurations": misc_count,
+                "vulnerabilities": vuln_count
+            },
             "parsed_data": parsed_result.model_dump(),
-            "policy_report": report.model_dump()
+            "policy_report": report_dict
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Scan failed: {str(e)}")
