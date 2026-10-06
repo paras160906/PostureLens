@@ -1,0 +1,429 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Policy Library - Container Security Posture Tool</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#afc9ea",
+                        "inverse-surface": "#d1e4ff",
+                        "primary-fixed": "#79f7e3",
+                        "primary-fixed-dim": "#59dbc7",
+                        "surface-container-low": "#031d34",
+                        "on-tertiary-fixed": "#400009",
+                        "surface-container-high": "#142b43",
+                        "on-secondary-container": "#9eb7d8",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#920021",
+                        "on-secondary-fixed": "#001d36",
+                        "primary": "#59dbc7",
+                        "on-primary": "#003731",
+                        "on-secondary": "#17324d",
+                        "primary-container": "#00a896",
+                        "inverse-on-surface": "#1b324a",
+                        "surface-variant": "#20364e",
+                        "surface": "#001428",
+                        "tertiary-container": "#ff5e68",
+                        "tertiary-fixed": "#ffdad9",
+                        "on-tertiary": "#680014",
+                        "surface-container": "#072138",
+                        "outline-variant": "#3c4946",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#006b5f",
+                        "on-surface-variant": "#bbcac5",
+                        "on-secondary-fixed-variant": "#2f4865",
+                        "on-primary-fixed-variant": "#005047",
+                        "surface-container-lowest": "#000f20",
+                        "tertiary": "#ffb3b3",
+                        "on-background": "#d1e4ff",
+                        "background": "#001428",
+                        "outline": "#869490",
+                        "surface-bright": "#253b53",
+                        "on-tertiary-container": "#640013",
+                        "tertiary-fixed-dim": "#ffb3b3",
+                        "on-primary-fixed": "#00201c",
+                        "surface-dim": "#001428",
+                        "secondary-fixed": "#d1e4ff",
+                        "on-error": "#690005",
+                        "on-primary-container": "#00352e",
+                        "secondary-container": "#2f4865",
+                        "secondary": "#afc9ea",
+                        "surface-tint": "#59dbc7",
+                        "on-surface": "#d1e4ff",
+                        "surface-container-highest": "#20364e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "md": "16px",
+                        "gutter": "20px",
+                        "xl": "40px",
+                        "lg": "24px",
+                        "sidebar-width": "260px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "code-sm": ["JetBrains Mono"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "code-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #001428;
+            color: #d1e4ff;
+        }
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #001428;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #20364e;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2f4865;
+        }
+        
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #00a896;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #00a896;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md h-screen overflow-hidden flex bg-surface dark:bg-surface">
+<!-- SideNavBar (Shared Component) -->
+<nav class="fixed left-0 top-0 h-full w-sidebar-width bg-surface-container dark:bg-surface-container border-r border-outline-variant dark:border-outline-variant flex flex-col py-lg px-md z-20">
+<!-- Header -->
+<div class="mb-xl flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary leading-tight">CSP Tool</h1>
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Enterprise Security</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="space-y-sm flex-1">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">security_update_good</span>
+<span>New Scan</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>Scan History</span>
+</a>
+</li>
+<!-- Active Tab: Policy Library -->
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-primary font-bold border-r-2 border-primary bg-secondary-container/10 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">policy</span>
+<span>Policy Library</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</li>
+</ul>
+<!-- Bottom User Area -->
+<div class="mt-auto pt-lg border-t border-outline-variant/50">
+<div class="flex items-center gap-sm px-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Admin User</span>
+<span class="text-[10px] text-on-surface-variant font-code-sm">v2.4.1</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-sidebar-width flex flex-col h-full bg-background relative overflow-hidden">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center h-16 px-lg bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant shrink-0 z-10">
+<!-- Left: Search (from search_bar: "on_left") -->
+<div class="flex-1 flex items-center">
+<div class="relative w-full max-w-md group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-outline-variant rounded-DEFAULT bg-surface-container-low text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-code-sm text-code-sm h-[36px]" placeholder="Search policies, rules, IDs..." type="text">
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+<span class="text-[10px] text-on-surface-variant border border-outline-variant rounded px-1 font-code-sm">⌘K</span>
+</div>
+</div>
+</div>
+<!-- Center: Product Name (Hidden on small screens, shown here for structure) -->
+<div class="hidden lg:flex items-center justify-center flex-1">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary">Container Security Posture Tool</span>
+</div>
+<!-- Right: Actions -->
+<div class="flex items-center justify-end gap-sm flex-1">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full shadow-[0_0_4px_#ffb4ab]"></span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-lg flex flex-col gap-lg relative">
+<!-- Subtle background effect -->
+<div class="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-surface-container-high/40 via-background to-background"></div>
+<!-- Page Header -->
+<div class="flex items-center justify-between z-10 relative">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Policy Library</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage and configure active security rules across environments.</p>
+</div>
+<div class="flex gap-md">
+<button class="px-md py-2 border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary rounded transition-colors font-label-md text-label-md flex items-center gap-2 bg-surface-container-low">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+                        Filter
+                    </button>
+<button class="px-md py-2 bg-primary-container text-on-primary font-label-md text-label-md rounded hover:bg-primary transition-colors flex items-center gap-2 shadow-[0_0_8px_rgba(0,168,150,0.3)]">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        Manage Custom Rules
+                    </button>
+</div>
+</div>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-12 gap-lg flex-1 z-10 relative min-h-0">
+<!-- Left Sidebar: Categories (3 cols) -->
+<div class="col-span-3 flex flex-col gap-sm overflow-y-auto pr-sm custom-scrollbar">
+<div class="font-label-md text-label-md text-outline mb-2 px-2 uppercase">Categories</div>
+<button class="w-full text-left px-md py-3 rounded bg-secondary-container/20 border border-primary/30 border-l-2 border-l-primary flex items-center justify-between text-primary font-body-md text-body-md hover:bg-secondary-container/30 transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">token</span>
+                            Container Config
+                        </div>
+<span class="bg-surface-variant text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-code-sm">12</span>
+</button>
+<button class="w-full text-left px-md py-3 rounded bg-surface border border-transparent hover:border-outline-variant flex items-center justify-between text-on-surface-variant hover:text-on-surface font-body-md text-body-md transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">admin_panel_settings</span>
+                            RBAC &amp; Permissions
+                        </div>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-code-sm">8</span>
+</button>
+<button class="w-full text-left px-md py-3 rounded bg-surface border border-transparent hover:border-outline-variant flex items-center justify-between text-on-surface-variant hover:text-on-surface font-body-md text-body-md transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">lan</span>
+                            Network Security
+                        </div>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-code-sm">15</span>
+</button>
+<button class="w-full text-left px-md py-3 rounded bg-surface border border-transparent hover:border-outline-variant flex items-center justify-between text-on-surface-variant hover:text-on-surface font-body-md text-body-md transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">key</span>
+                            Secrets Management
+                        </div>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-code-sm">4</span>
+</button>
+<button class="w-full text-left px-md py-3 rounded bg-surface border border-transparent hover:border-outline-variant flex items-center justify-between text-on-surface-variant hover:text-on-surface font-body-md text-body-md transition-colors">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">speed</span>
+                            Resource Limits
+                        </div>
+<span class="bg-surface-container-high text-on-surface-variant text-[10px] px-2 py-0.5 rounded-full font-code-sm">6</span>
+</button>
+</div>
+<!-- Right Canvas: Rules Table (9 cols) -->
+<div class="col-span-9 bg-surface-container-high border border-outline-variant rounded-lg flex flex-col overflow-hidden shadow-lg shadow-black/20">
+<!-- Table Header -->
+<div class="bg-surface-container-high border-b border-outline-variant px-lg py-sm grid grid-cols-12 gap-4 items-center">
+<div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Rule ID</div>
+<div class="col-span-6 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Name / Description</div>
+<div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Severity</div>
+<div class="col-span-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Status</div>
+</div>
+<!-- Table Body -->
+<div class="flex-1 overflow-y-auto custom-scrollbar bg-surface-container-low">
+<!-- Row 1 -->
+<div class="grid grid-cols-12 gap-4 items-center px-lg py-md border-b border-outline-variant/30 hover:bg-surface-container transition-colors group">
+<div class="col-span-2 font-code-sm text-code-sm text-secondary-fixed-dim">
+                                CIS-1.1.1
+                            </div>
+<div class="col-span-6 pr-4">
+<div class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors">Ensure privileged containers are not used</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-1">Privileged containers have access to all Linux kernel capabilities and devices.</div>
+</div>
+<div class="col-span-2 flex items-center">
+<span class="bg-error/10 text-error font-code-sm text-code-sm px-2 py-1 rounded shadow-[0_0_8px_rgba(255,180,171,0.2)] border border-error/20 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span> Critical
+                                </span>
+</div>
+<div class="col-span-2 flex justify-end">
+<label class="flex items-center cursor-pointer">
+<div class="relative">
+<input checked="" class="sr-only toggle-checkbox" id="toggle1" type="checkbox">
+<div class="block bg-surface-variant w-10 h-6 rounded-full border border-outline-variant toggle-label transition-colors duration-300"></div>
+<div class="dot absolute left-1 top-1 bg-on-surface w-4 h-4 rounded-full transition transform duration-300 shadow"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="grid grid-cols-12 gap-4 items-center px-lg py-md border-b border-outline-variant/30 hover:bg-surface-container transition-colors group">
+<div class="col-span-2 font-code-sm text-code-sm text-secondary-fixed-dim">
+                                CIS-1.1.2
+                            </div>
+<div class="col-span-6 pr-4">
+<div class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors">Ensure hostPID and hostIPC are not shared</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-1">Prevents containers from seeing or interacting with processes on the host.</div>
+</div>
+<div class="col-span-2 flex items-center">
+<span class="bg-tertiary-container/10 text-tertiary font-code-sm text-code-sm px-2 py-1 rounded border border-tertiary/20 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error</span> High
+                                </span>
+</div>
+<div class="col-span-2 flex justify-end">
+<label class="flex items-center cursor-pointer">
+<div class="relative">
+<input checked="" class="sr-only toggle-checkbox" id="toggle2" type="checkbox">
+<div class="block bg-surface-variant w-10 h-6 rounded-full border border-outline-variant toggle-label transition-colors duration-300"></div>
+<div class="dot absolute left-1 top-1 bg-on-surface w-4 h-4 rounded-full transition transform duration-300 shadow"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Row 3 (Off) -->
+<div class="grid grid-cols-12 gap-4 items-center px-lg py-md border-b border-outline-variant/30 hover:bg-surface-container transition-colors group opacity-60">
+<div class="col-span-2 font-code-sm text-code-sm text-secondary-fixed-dim">
+                                K8S-POL-04
+                            </div>
+<div class="col-span-6 pr-4">
+<div class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors">Require read-only root filesystem</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-1">Forces containers to run with an immutable root filesystem to prevent tampering.</div>
+</div>
+<div class="col-span-2 flex items-center">
+<span class="bg-tertiary-container/10 text-tertiary font-code-sm text-code-sm px-2 py-1 rounded border border-tertiary/20 inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">error</span> High
+                                </span>
+</div>
+<div class="col-span-2 flex justify-end">
+<label class="flex items-center cursor-pointer">
+<div class="relative">
+<input class="sr-only toggle-checkbox" id="toggle3" type="checkbox">
+<div class="block bg-surface-variant w-10 h-6 rounded-full border border-outline-variant toggle-label transition-colors duration-300"></div>
+<div class="dot absolute left-1 top-1 bg-on-surface w-4 h-4 rounded-full transition transform duration-300 shadow"></div>
+</div>
+</label>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="grid grid-cols-12 gap-4 items-center px-lg py-md border-b border-outline-variant/30 hover:bg-surface-container transition-colors group">
+<div class="col-span-2 font-code-sm text-code-sm text-secondary-fixed-dim">
+                                CIS-5.2.1
+                            </div>
+<div class="col-span-6 pr-4">
+<div class="font-body-md text-body-md text-on-surface font-semibold mb-1 group-hover:text-primary transition-colors">Minimize admission of root containers</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-1">Containers should run as a non-root user whenever possible.</div>
+</div>
+<div class="col-span-2 flex items-center">
+<span class="bg-surface-bright/40 text-on-surface font-code-sm text-code-sm px-2 py-1 rounded border border-outline-variant inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">info</span> Medium
+                                </span>
+</div>
+<div class="col-span-2 flex justify-end">
+<label class="flex items-center cursor-pointer">
+<div class="relative">
+<input checked="" class="sr-only toggle-checkbox" id="toggle4" type="checkbox">
+<div class="block bg-surface-variant w-10 h-6 rounded-full border border-outline-variant toggle-label transition-colors duration-300"></div>
+<div class="dot absolute left-1 top-1 bg-on-surface w-4 h-4 rounded-full transition transform duration-300 shadow"></div>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="bg-surface-container-high border-t border-outline-variant px-lg py-sm flex justify-between items-center text-xs text-on-surface-variant font-code-sm">
+<span>Showing 1-4 of 12 rules</span>
+<div class="flex gap-2">
+<button class="px-2 py-1 rounded hover:bg-surface-variant transition-colors disabled:opacity-50" disabled="">&lt; Prev</button>
+<button class="px-2 py-1 rounded hover:bg-surface-variant transition-colors">Next &gt;</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<script>
+        // Simple script to handle toggle visual state for demonstration
+        document.querySelectorAll('.toggle-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const dot = this.parentElement.querySelector('.dot');
+                const row = this.closest('.grid.items-center.px-lg');
+                
+                if (this.checked) {
+                    dot.style.transform = 'translateX(100%)';
+                    row.classList.remove('opacity-60');
+                } else {
+                    dot.style.transform = 'translateX(0)';
+                    row.classList.add('opacity-60');
+                }
+            });
+
+            // Initialize position
+            if (checkbox.checked) {
+                const dot = checkbox.parentElement.querySelector('.dot');
+                dot.style.transform = 'translateX(100%)';
+            }
+        });
+    </script>
+</body></html>

@@ -1,0 +1,24 @@
+# Clean, production-ready multi-stage Dockerfile
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+FROM python:3.11-slim AS runner
+
+WORKDIR /app
+RUN groupadd -g 10001 appgroup && \
+    useradd -u 10001 -g appgroup -s /bin/sh appuser
+
+COPY --from=builder /root/.local /home/appuser/.local
+COPY app.py .
+
+ENV PORT=8080
+ENV APP_ENV=production
+
+EXPOSE 8080/tcp
+
+USER appuser
+
+CMD ["python", "app.py"]

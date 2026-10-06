@@ -1,0 +1,372 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Scan Detail - Container Security Posture Tool</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#afc9ea",
+                      "inverse-surface": "#d1e4ff",
+                      "primary-fixed": "#79f7e3",
+                      "primary-fixed-dim": "#59dbc7",
+                      "surface-container-low": "#031d34",
+                      "on-tertiary-fixed": "#400009",
+                      "surface-container-high": "#142b43",
+                      "on-secondary-container": "#9eb7d8",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#920021",
+                      "on-secondary-fixed": "#001d36",
+                      "primary": "#59dbc7",
+                      "on-primary": "#003731",
+                      "on-secondary": "#17324d",
+                      "primary-container": "#00a896",
+                      "inverse-on-surface": "#1b324a",
+                      "surface-variant": "#20364e",
+                      "surface": "#001428",
+                      "tertiary-container": "#ff5e68",
+                      "tertiary-fixed": "#ffdad9",
+                      "on-tertiary": "#680014",
+                      "surface-container": "#072138",
+                      "outline-variant": "#3c4946",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#006b5f",
+                      "on-surface-variant": "#bbcac5",
+                      "on-secondary-fixed-variant": "#2f4865",
+                      "on-primary-fixed-variant": "#005047",
+                      "surface-container-lowest": "#000f20",
+                      "tertiary": "#ffb3b3",
+                      "on-background": "#d1e4ff",
+                      "background": "#001428",
+                      "outline": "#869490",
+                      "surface-bright": "#253b53",
+                      "on-tertiary-container": "#640013",
+                      "tertiary-fixed-dim": "#ffb3b3",
+                      "on-primary-fixed": "#00201c",
+                      "surface-dim": "#001428",
+                      "secondary-fixed": "#d1e4ff",
+                      "on-error": "#690005",
+                      "on-primary-container": "#00352e",
+                      "secondary-container": "#2f4865",
+                      "secondary": "#afc9ea",
+                      "surface-tint": "#59dbc7",
+                      "on-surface": "#d1e4ff",
+                      "surface-container-highest": "#20364e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "md": "16px",
+                      "gutter": "20px",
+                      "xl": "40px",
+                      "lg": "24px",
+                      "sidebar-width": "260px",
+                      "base": "4px",
+                      "xs": "4px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "code-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "code-sm": [
+                              "13px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background-color: #3c4946; /* outline-variant */
+          border-radius: 4px;
+        }
+        .glow-red {
+            box-shadow: 0 0 4px 0 rgba(232, 72, 85, 0.3); /* Simulating glow for critical */
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex antialiased">
+<!-- SideNavBar (from JSON) -->
+<nav class="bg-surface-container dark:bg-surface-container fixed left-0 top-0 h-full w-sidebar-width border-r border-outline-variant dark:border-outline-variant flex flex-col py-lg px-md h-screen hidden md:flex z-20">
+<div class="mb-xl">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary leading-tight">CSP Tool</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Enterprise Security</p>
+</div>
+</div>
+</div>
+<ul class="flex flex-col gap-sm flex-grow">
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-lg text-body-lg">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">security_update_good</span>
+<span class="font-body-lg text-body-lg">New Scan</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-primary font-bold border-r-2 border-primary bg-secondary-container/10 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-body-lg text-body-lg">Scan History</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">policy</span>
+<span class="font-body-lg text-body-lg">Policy Library</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant dark:text-on-surface-variant hover:bg-secondary-container/20 hover:text-primary transition-colors transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-lg text-body-lg">Settings</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-sidebar-width w-full">
+<!-- TopNavBar (from JSON, modified for Detail context) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant flex justify-between items-center h-16 px-lg sticky top-0 z-10">
+<div class="flex items-center gap-md">
+<a class="text-on-surface-variant hover:text-primary transition-colors flex items-center" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<div class="flex flex-col">
+<h2 class="font-headline-md text-headline-md font-bold text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg">description</span>
+                        Dockerfile-prod-v2
+                    </h2>
+<span class="font-label-md text-label-md text-on-surface-variant">Scanned on Oct 24, 2023 at 14:32 UTC</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors cursor-pointer transition-opacity active:opacity-70 p-sm rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors cursor-pointer transition-opacity active:opacity-70 p-sm rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-lg overflow-y-auto custom-scrollbar bg-background">
+<div class="max-w-7xl mx-auto space-y-lg">
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Total Findings Card -->
+<div class="col-span-1 md:col-span-4 bg-surface-bright border border-[#415A77] rounded-xl p-lg flex flex-col justify-center items-center">
+<span class="font-headline-lg text-headline-lg text-on-surface">8</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mt-sm">Total Findings</span>
+</div>
+<!-- Severity Breakdown -->
+<div class="col-span-1 md:col-span-8 bg-surface-bright border border-[#415A77] rounded-xl p-lg flex items-center justify-around">
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-error-container/20 border border-error text-error glow-red">
+<span class="font-headline-md text-headline-md font-bold">3</span>
+</div>
+<span class="font-label-md text-label-md text-error uppercase">Critical</span>
+</div>
+<div class="w-px h-12 bg-outline-variant"></div>
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-[#FF9800]/10 border border-[#FF9800] text-[#FF9800]">
+<span class="font-headline-md text-headline-md font-bold">2</span>
+</div>
+<span class="font-label-md text-label-md text-[#FF9800] uppercase">High</span>
+</div>
+<div class="w-px h-12 bg-outline-variant"></div>
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-[#FFC107]/10 border border-[#FFC107] text-[#FFC107]">
+<span class="font-headline-md text-headline-md font-bold">2</span>
+</div>
+<span class="font-label-md text-label-md text-[#FFC107] uppercase">Medium</span>
+</div>
+<div class="w-px h-12 bg-outline-variant"></div>
+<div class="flex flex-col items-center gap-xs">
+<div class="w-12 h-12 rounded-full flex items-center justify-center bg-primary-container/10 border border-primary text-primary">
+<span class="font-headline-md text-headline-md font-bold">1</span>
+</div>
+<span class="font-label-md text-label-md text-primary uppercase">Low</span>
+</div>
+</div>
+</section>
+<!-- Finding Cards List -->
+<section class="space-y-md">
+<!-- Critical Finding 1 -->
+<article class="bg-surface-bright border border-[#415A77] rounded-xl overflow-hidden flex flex-col md:flex-row">
+<!-- Left Pillar: Status & ID -->
+<div class="md:w-48 bg-surface-container-low p-md flex flex-col gap-sm border-b md:border-b-0 md:border-r border-[#415A77]">
+<div class="inline-flex items-center gap-xs px-sm py-1 rounded bg-error-container/20 text-error border border-error w-fit glow-red">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span class="font-code-sm text-code-sm uppercase">Critical</span>
+</div>
+<div class="mt-auto pt-md">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Rule ID</p>
+<p class="font-code-sm text-code-sm text-on-surface">CKV_DOCKER_1</p>
+</div>
+</div>
+<!-- Right Body: Details -->
+<div class="flex-1 p-lg flex flex-col gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Container running as root</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Running a container as root gives the container full administrative privileges on the host system, which could lead to a complete system compromise if the container is breached.</p>
+</div>
+<!-- Code Snippet -->
+<div class="bg-[#09121C] border border-[#415A77] rounded-lg p-md font-code-sm text-code-sm text-on-surface-variant overflow-x-auto custom-scrollbar">
+<div class="flex">
+<span class="text-outline-variant mr-sm select-none">12</span>
+<span class="text-[#afc9ea]">RUN</span> <span>apt-get update &amp;&amp; apt-get install -y curl</span>
+</div>
+<div class="flex bg-error-container/20 border-l-2 border-error">
+<span class="text-error mr-sm select-none pl-1">13</span>
+<span class="text-error">USER root</span> <span class="text-error/50 ml-sm">// Vulnerable line</span>
+</div>
+<div class="flex">
+<span class="text-outline-variant mr-sm select-none">14</span>
+<span class="text-[#afc9ea]">COPY</span> <span>. /app</span>
+</div>
+</div>
+<!-- Remediation -->
+<div class="bg-surface-container-low border border-[#415A77] rounded-lg p-md flex gap-md items-start">
+<span class="material-symbols-outlined text-primary mt-1">build</span>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface uppercase mb-xs">Remediation</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Ensure that the last USER instruction in the Dockerfile is not 'root'. Create a dedicated user group and user, then switch to it.</p>
+</div>
+</div>
+<div class="flex justify-end gap-sm mt-sm">
+<button class="px-md py-xs rounded text-primary font-label-md text-label-md uppercase hover:bg-primary-container/10 transition-colors">Ignore</button>
+<button class="px-md py-xs rounded bg-primary-container text-on-primary font-label-md text-label-md uppercase hover:bg-primary transition-colors">Create Issue</button>
+</div>
+</div>
+</article>
+<!-- High Finding 1 -->
+<article class="bg-surface-bright border border-[#415A77] rounded-xl overflow-hidden flex flex-col md:flex-row">
+<!-- Left Pillar: Status & ID -->
+<div class="md:w-48 bg-surface-container-low p-md flex flex-col gap-sm border-b md:border-b-0 md:border-r border-[#415A77]">
+<div class="inline-flex items-center gap-xs px-sm py-1 rounded bg-[#FF9800]/10 text-[#FF9800] border border-[#FF9800] w-fit">
+<span class="material-symbols-outlined text-sm">priority_high</span>
+<span class="font-code-sm text-code-sm uppercase">High</span>
+</div>
+<div class="mt-auto pt-md">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase">Rule ID</p>
+<p class="font-code-sm text-code-sm text-on-surface">CKV_DOCKER_2</p>
+</div>
+</div>
+<!-- Right Body: Details -->
+<div class="flex-1 p-lg flex flex-col gap-md">
+<div>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Healthcheck instruction missing</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Adding a HEALTHCHECK instruction ensures that Docker can check whether the container is still running correctly, improving availability and orchestrator integration.</p>
+</div>
+<div class="bg-[#09121C] border border-[#415A77] rounded-lg p-md font-code-sm text-code-sm text-on-surface-variant overflow-x-auto custom-scrollbar">
+<div class="flex text-outline-variant italic">
+<span>// No HEALTHCHECK instruction found in Dockerfile</span>
+</div>
+</div>
+<div class="flex justify-end gap-sm mt-sm">
+<button class="px-md py-xs rounded border border-[#415A77] text-on-surface-variant font-label-md text-label-md uppercase hover:bg-surface-variant transition-colors">View Details</button>
+</div>
+</div>
+</article>
+</section>
+</div>
+</main>
+</div>
+</body></html>

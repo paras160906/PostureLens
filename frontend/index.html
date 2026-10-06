@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PostureLens - Container & K8s Security Posture Tool</title>
+    <!-- Tailwind CSS with form plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#0A0A0A",
+              "surface": "#121212",
+              "surface-container": "#171717",
+              "surface-container-high": "#1E1E1E",
+              "surface-container-low": "#0A0A0A",
+              "border-main": "#262626",
+              "on-surface": "#EDEDED",
+              "on-surface-variant": "#A3A3A3",
+              "on-muted": "#737373",
+              "primary": "#EDEDED",
+              "on-primary": "#0A0A0A",
+              "primary-container": "#262626",
+              "error": "#EF4444"
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.375rem",
+              xl: "0.5rem",
+              full: "9999px"
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #0A0A0A;
+        color: #EDEDED;
+        font-family: 'Inter', sans-serif;
+      }
+      ::selection {
+        background-color: #262626;
+        color: #EDEDED;
+      }
+    </style>
+  </head>
+  <body class="bg-[#0A0A0A] text-[#EDEDED] antialiased h-screen overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
