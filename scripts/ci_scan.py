@@ -32,28 +32,37 @@ def discover_changed_files(target_branch: str = None) -> list[str]:
     # Determine base branch
     base_ref = target_branch or os.getenv("GITHUB_BASE_REF") or os.getenv("GITHUB_TARGET_BRANCH")
     
-    cmd = []
+    cmd_list = []
     if base_ref:
-        cmd = ["git", "diff", "--name-only", f"origin/{base_ref}...HEAD"]
-    else:
-        # Fallback to compare HEAD against previous commit or git status
-        cmd = ["git", "diff", "--name-only", "HEAD~1"]
-
-    try:
-        res = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        changed_lines = res.stdout.strip().splitlines()
-        for line in changed_lines:
-            line = line.strip()
-            if not line:
-                continue
-            p = Path(line)
-            if p.exists() and p.is_file():
-                fn = p.name.lower()
-                if "dockerfile" in fn or fn.endswith((".yaml", ".yml")):
-                    files_to_check.append(str(p))
-    except Exception as e:
-        print(f"::warning::Git diff detection failed ({e}). Fallback: searching current workspace.")
+        cmd_list.append(["git", "diff", "--name-only", f"origin/{base_ref}...HEAD"])
+        cmd_list.append(["git", "diff", "--name-only", f"{base_ref}...HEAD"])
+        cmd_list.append(["git", "diff", "--name-only", f"origin/{base_ref}"])
+        cmd_list.append(["git", "diff", "--name-only", f"{base_ref}"])
     
+    cmd_list.append(["git", "diff", "--name-only", "HEAD~1"])
+
+    changed_lines = []
+    for cmd in cmd_list:
+        try:
+            res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            output = res.stdout.strip().splitlines()
+            if output:
+                changed_lines = output
+                break
+        except Exception:
+            continue
+
+    for line in changed_lines:
+        line = line.strip()
+        if not line:
+            continue
+        p = Path(line)
+        if p.exists() and p.is_file():
+            fn = p.name.lower()
+            if "dockerfile" in fn or fn.endswith((".yaml", ".yml")):
+                if str(p) not in files_to_check:
+                    files_to_check.append(str(p))
+
     # If no files found via git diff, check git status for untracked/modified
     if not files_to_check:
         try:
