@@ -1,0 +1,12 @@
+# Test Insecure Dockerfile for CI workflow verification
+FROM ubuntu:latest
+
+# Security violation: Hardcoded secret in ENV
+ENV AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+# Security violation: Insecure ADD instruction
+ADD https://example.com/download.tar.gz /tmp/
+
+# Security violation: Missing USER instruction (runs as root user)
+EXPOSE 8080
+CMD ["/bin/bash"]
